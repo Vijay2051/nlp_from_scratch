@@ -141,7 +141,7 @@ def evaluate(model, iterator, criterion):
         
     return epoch_loss / len(iterator), epoch_acc / len(iterator)
 
-N_EPOCHS = 200
+N_EPOCHS = 5
 for epoch in range(N_EPOCHS):
     
     train_loss, train_acc = train(model, train_iterator, optimizer, criterion)
