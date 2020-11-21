@@ -30,7 +30,7 @@ fields = {"quote": ("q", quote), "score": ("s", score)}
 
 # dataset
 train_data, test_data = TabularDataset.splits(
-    path="../input/torch_text_data",
+    path="../input/torch_text_data_1",
     train="train.csv",
     test="test.csv",
     format="csv",
@@ -53,5 +53,5 @@ train_iterator, test_iterator = BucketIterator.splits(
     (train_data, test_data), batch_size=2, device="cpu"
 )
 
-for batch in train_iterator:
-    print(batch.q)
+for batch in test_iterator:
+    print(batch)
