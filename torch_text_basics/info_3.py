@@ -52,7 +52,7 @@ german = Field(sequential=True, use_vocab=True, tokenize=tokenize_ger, lower=Tru
 fields = {"english": ("eng", english), "german": ("ger", german)}
 
 # split into train and test from the dataset
-train_data, test_data = TabularDataset.splits(path="../input/torch_text_data_3", train="train_wmt_10000.json", test="test_wmt_10000.json", format="json", fields=fields)
+train_data, test_data = TabularDataset.splits(path="input/torch_text_data_3", train="train_wmt_10000.json", test="test_wmt_10000.json", format="json", fields=fields)
 
 # build the vocab 
 english.build_vocab(train_data, max_size=10000, min_freq=2)
