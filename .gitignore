@@ -131,3 +131,6 @@ dmypy.json
 .data/
 
 /input
+models/
+runs/
+*.tar
