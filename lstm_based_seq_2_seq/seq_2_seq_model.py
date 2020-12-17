@@ -14,7 +14,7 @@ from torchtext.datasets import Multi30k
 from utils import bleu, load_checkpoint, save_checkpoint, translate_sentence
 
 # constants
-FOLDER_PATH = "../input/translation"
+FOLDER_PATH = "../input/translation/"
 
 try:
     spacy_eng = spacy.load("en")
@@ -27,6 +27,7 @@ except Exception as e:
     spacy_ger = spacy.load("de")
 
 
+print("=>>> spacy done")
 # spacy tokenizer
 def tokenizer_ger(text):
     return [tok.text for tok in spacy_ger.tokenizer(text)]
@@ -35,6 +36,8 @@ def tokenizer_ger(text):
 def tokenizer_eng(text):
     return [tok.text for tok in spacy_eng.tokenizer(text)]
 
+
+print("=>>> token done")
 
 german = Field(
     tokenize=tokenizer_ger,
@@ -50,28 +53,30 @@ english = Field(
     eos_token="<eos>",
 )
 
+print("=>>> field done")
+
 # remove three double quotes for the large en de dataset
 
 # load the data
 # create fields in json format for the tabular data
-fields = [("eng", english), ("ger", german)]
+fields = {"english": ("trg", english), "german": ("src", german)}
 
 # split the dataset into train and test from the dataset
 train_data, validation_data = TabularDataset.splits(
     path=FOLDER_PATH,
-    train="en_de_train.csv",
-    validation="en_de_val.csv",
+    train="en_de_val_train.csv",
+    validation="en_de_val_test.csv",
     format="csv",
     fields=fields,
 )
 
-print("=>>>>>>>>>>> split complete")
+print("=>>> split complete")
 
 # build the vocab
 english.build_vocab(train_data, max_size=10000, min_freq=2)
 german.build_vocab(train_data, max_size=10000, min_freq=2)
 
-print("=>>>>>>>>>>> vocab building complete")
+print("=>>> vocab building complete")
 
 
 class Encoder(nn.Module):
@@ -277,5 +282,5 @@ for epoch in range(num_epochs):
         writer.add_scalar("Training loss", loss, global_step=step)
         step += 1
 
-score = bleu(test_data[1:100], model, german, english, device)
+score = bleu(validation_data[1:100], model, german, english, device)
 print(f"Bleu score {score*100:.2f}")
