@@ -1,3 +1,6 @@
 {
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "black",
+    "python.analysis.extraPaths": [
+        "bert_based_nlp_abh_thk"
+    ]
 }

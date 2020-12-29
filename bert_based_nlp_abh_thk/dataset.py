@@ -35,5 +35,5 @@ class BERTDataset:
             "ids": torch.Tensor(ids, dtype=torch.long),
             "mask": torch.Tensor(mask, dtype=torch.long),
             "token_type_ids": torch.Tensor(token_type_ids, dtype=torch.long),
-            "target": torch.Tensor(self.target, dtype=torch.float),
+            "targets": torch.Tensor(self.target, dtype=torch.float),
         }
