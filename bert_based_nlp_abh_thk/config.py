@@ -1,10 +1,11 @@
 from transformers import BertTokenizer
 import torch
 
-tokenizer = BertTokenizer.from_pretrained("bert-base-uncased", do_lower_case=True)
-max_len = BertTokenizer.max_model_input_sizes["bert-base-uncased"]
-train_batch_size = 8
-valid_batch_size = 4
-epochs = 10
-training_file = "../input/imdb.csv"
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+TOKENIZER = BertTokenizer.from_pretrained("bert-base-uncased", do_lower_case=True)
+MAX_LEN = 64
+TRAIN_BATCH_SIZE = 8
+VALID_BATCH_SIZE = 4
+EPOCHS = 10
+TRAINING_FILE = "../input/imdb.csv"
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+MODEL_PATH = "../input/abh_sent_model_torch/model.bin"

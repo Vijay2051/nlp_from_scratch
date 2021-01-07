@@ -3,14 +3,12 @@ from tqdm import tqdm
 import torch
 import torch.nn as nn
 
-import config
-
 
 def loss_fn(outputs, targets):
-    return nn.BCEWithLogitsLoss()(outputs, targets)
+    return nn.BCEWithLogitsLoss()(outputs, targets.view(-1, 1))
 
 
-def train_fn(dataloader, model, optimizer, device, accumulation_steps):
+def train_fn(dataloader, model, optimizer, DEVICE, scheduler):
     model.train()
 
     for bi, d in tqdm(enumerate(dataloader), total=len(dataloader)):
@@ -19,20 +17,20 @@ def train_fn(dataloader, model, optimizer, device, accumulation_steps):
         token_type_ids = d["token_type_ids"]
         targets = d["targets"]
 
-        ids = ids.to(config.device, dtype=torch.long)
-        mask = mask.to(config.device, dtype=torch.long)
-        token_type_ids = token_type_ids.to(config.device, dtype=torch.long)
-        targets = targets.to(config.device, dtype=torch.float)
+        ids = ids.to(DEVICE, dtype=torch.long)
+        mask = mask.to(DEVICE, dtype=torch.long)
+        token_type_ids = token_type_ids.to(DEVICE, dtype=torch.long)
+        targets = targets.to(DEVICE, dtype=torch.float)
 
         optimizer.zero_grad()
-        outputs = model(ids, attention_mask=mask, token_type_ids=token_type_ids)
+        outputs = model(ids, mask=mask, token_type_ids=token_type_ids)
         loss = loss_fn(outputs, targets)
         loss.backward()
         optimizer.step()
         scheduler.step()
 
 
-def eval_fn(model, optimizer, dataloader):
+def eval_fn(dataloader, model, DEVICE):
     model.eval()
     fin_targets = []
     fin_outputs = []
@@ -43,10 +41,10 @@ def eval_fn(model, optimizer, dataloader):
             token_type_ids = d["token_type_ids"]
             targets = d["targets"]
 
-            ids = ids.to(config.device, dtype=torch.long)
-            mask = mask.to(config.device, dtype=torch.long)
-            token_type_ids = token_type_ids.to(config.device, dtype=torch.long)
-            targets = targets.to(config.device, dtype=torch.float)
+            ids = ids.to(DEVICE, dtype=torch.long)
+            mask = mask.to(DEVICE, dtype=torch.long)
+            token_type_ids = token_type_ids.to(DEVICE, dtype=torch.long)
+            targets = targets.to(DEVICE, dtype=torch.float)
 
             outputs = model(ids, attention_mask=mask, token_type_ids=token_type_ids)
             fin_targets.extend(targets.cpu().detach().numpy().tolist())
